@@ -51,7 +51,7 @@ category_index = label_map_util.create_category_index(categories)
 
 def main():
     # camera = cv2.VideoCapture(os.path.join(Project_PATH, 'test_video', 'surveillance.avi'))
-    camera = cv2.VideoCapture(os.path.join(Project_PATH, 'test_video', 'traffic.flv'))
+    camera = cv2.VideoCapture('../test_video/surveillance.avi')
     with detection_graph.as_default():
         with tf.Session(graph=detection_graph) as sess:
             while True:

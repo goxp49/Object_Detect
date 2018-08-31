@@ -1,0 +1,1 @@
+注意：opencv_python和opencv_contrib_python会冲突！只需要安装其中一个即可。
