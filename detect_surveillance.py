@@ -90,10 +90,14 @@ def tf_get_roi(Session, image):
                 (left, right, top, bottom) = (int(xmin * im_width), int(xmax * im_width),
                                               int(ymin * im_height), int(ymax * im_height))
             roi_list.append((left, right, top, bottom))
-            # cv2.rectangle(image, (left, top), (right, bottom),
-            #               (0, 255, 0), 2)
     return roi_list
 
+
+def show_rectangle(roi_list, image, color=(0, 255, 0)):
+    for roi in roi_list:
+        (left, right, top, bottom) = roi
+        cv2.rectangle(image, (left, top), (right, bottom),
+                      color, 2)
 
 
 def main():
@@ -102,11 +106,12 @@ def main():
     with detection_graph.as_default():
         with tf.Session(graph=detection_graph) as sess:
             while True:
-                ret, image_np = camera.read()
-                tf_get_roi(sess, image_np)
+                ret, image = camera.read()
+                roi_list = tf_get_roi(sess, image)
+                show_rectangle(roi_list, image)
 
                 # cv2.imshow('object detection', cv2.resize(image_np, (800, 600)))
-                cv2.imshow('object detection', cv2.resize(image_np, (OUTPUT_IMAGE_WIDTH, OUTPUT_IMAGE_HEIGHT)))
+                cv2.imshow('object detection', cv2.resize(image, (OUTPUT_IMAGE_WIDTH, OUTPUT_IMAGE_HEIGHT)))
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
                     break
