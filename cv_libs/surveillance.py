@@ -8,7 +8,7 @@ and tracks pedestrians in the video.
 
 import cv2
 import numpy as np
-import os.path as path
+import os
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -18,7 +18,6 @@ args = vars(parser.parse_args())
 
 
 def center(points):
-    print(points)
     """计算矩阵的中心坐标"""
     x = (points[0][0] + points[1][0] + points[2][0] + points[3][0]) / 4
     y = (points[0][1] + points[1][1] + points[2][1] + points[3][1]) / 4
@@ -99,7 +98,7 @@ class Pedestrian():
 
 def main():
     # camera = cv2.VideoCapture(path.join(path.dirname(__file__), "traffic.flv"))
-    camera = cv2.VideoCapture(path.join(path.dirname(__file__), "768x576.avi"))
+    camera = cv2.VideoCapture(os.path.join(os.path.dirname(os.getcwd()), 'test_video', "WalkByShop1cor.mpg"))
     # camera = cv2.VideoCapture(path.join(path.dirname(__file__), "..", "movie.mpg"))
     # camera = cv2.VideoCapture(0)
     history = 20
