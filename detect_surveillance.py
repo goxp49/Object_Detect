@@ -99,12 +99,22 @@ def show_rectangle(roi_list, image, color=(0, 255, 0)):
         cv2.rectangle(image, (left, top), (right, bottom),
                       color, 2)
 
-
+"""
+    程序流程：
+    1.找出起始画面中的人物（通过tf）
+    2.提取出各自的ROI
+    3.将ROI提交给CSRT追踪
+"""
 def main():
     # camera = cv2.VideoCapture(os.path.join(Project_PATH, 'test_video', 'surveillance.avi'))
     camera = cv2.VideoCapture('test_video/surveillance.avi')
+    # 初始化多重目标检测器
+    trackers = cv2.MultiTracker_create()
     with detection_graph.as_default():
         with tf.Session(graph=detection_graph) as sess:
+            # 提取目标对象
+            ret, image = camera.read()
+            roi_list = tf_get_roi(sess, image)
             while True:
                 ret, image = camera.read()
                 roi_list = tf_get_roi(sess, image)
