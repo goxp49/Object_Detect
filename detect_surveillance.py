@@ -93,7 +93,7 @@ def tf_get_roi(Session, image):
     return roi_list
 
 
-def show_rectangle(roi_list, image, color=(0, 255, 0)):
+def tf_show_rectangle(roi_list, image, color=(0, 255, 0)):
     for roi in roi_list:
         (left, right, top, bottom) = roi
         cv2.rectangle(image, (left, top), (right, bottom),
@@ -115,14 +115,22 @@ def main():
             # 提取目标对象
             ret, image = camera.read()
             roi_list = tf_get_roi(sess, image)
+            for roi in roi_list:
+                left, right, top, bottom = roi    #(left, right, top, bottom)
+                print((left, top, right, bottom))
+                tracker = cv2.TrackerCSRT_create()
+                trackers.add(tracker, image, (left, top, right-left, bottom-top))
             while True:
-                ret, image = camera.read()
-                roi_list = tf_get_roi(sess, image)
-                show_rectangle(roi_list, image)
+                ret, frame = camera.read()
+                (success, boxes) = trackers.update(frame)
+                if success:
+                    for box in boxes:
+                        (x, y, w, h) = [int(v) for v in box]
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-                # cv2.imshow('object detection', cv2.resize(image_np, (800, 600)))
-                cv2.imshow('object detection', cv2.resize(image, (OUTPUT_IMAGE_WIDTH, OUTPUT_IMAGE_HEIGHT)))
+                cv2.imshow('object detection', cv2.resize(frame, (OUTPUT_IMAGE_WIDTH, OUTPUT_IMAGE_HEIGHT)))
                 if cv2.waitKey(25) & 0xFF == ord('q'):
+                    camera.release()
                     cv2.destroyAllWindows()
                     break
 
